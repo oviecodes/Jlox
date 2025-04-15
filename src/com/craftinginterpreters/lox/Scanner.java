@@ -81,6 +81,10 @@ public class Scanner {
                             line++;
                         }
 
+                        // for nested comments
+                        // if(peek() == '/' && peekNext() == '*') {}
+                        // if(peek() == '*' && peekNext() == '/') {}
+
                         advance();
                     }
 
@@ -197,6 +201,15 @@ public class Scanner {
 
     private boolean isAlphaNumeric(char c) {
         return isAlpha(c) || isDigit(c);
+    }
+
+    private boolean isNestedComment() {
+        return true;
+    }
+
+
+    private int commentNestingLevels() {
+        return 0;
     }
 
 
