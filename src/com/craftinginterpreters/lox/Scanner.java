@@ -75,11 +75,22 @@ public class Scanner {
                 if(match('/')) {
                     // A comment goes until the end of the line
                     while(peek() != '\n' && !isAtEnd()) advance();
+                } else if (match('*')) {
+                    while(!(peek() == '*' && peekNext() == '/') && !isAtEnd()) {
+                        if (peek() == '\n') {
+                            line++;
+                        }
+
+                        advance();
+                    }
+
+                    advance();
+                    advance();
                 } else {
                     addToken(TokenType.SLASH);
                 }
-
                 break;
+
             case ' ':
             case '\r':
             case '\t':
@@ -161,7 +172,7 @@ public class Scanner {
         while(isDigit(peek())) advance();
 
         // Look for a fractional part
-        if(peek() == '.' && isDigit(peakNext())) {
+        if(peek() == '.' && isDigit(peekNext())) {
             // Consume the "."
             advance();
 
@@ -175,7 +186,7 @@ public class Scanner {
         return c >= '0' && c <= '9';
     }
 
-    private char peakNext() {
+    private char peekNext() {
         if (current + 1 >= source.length()) return '\0';
         return source.charAt(current+1);
     }
