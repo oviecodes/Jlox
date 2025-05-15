@@ -188,5 +188,10 @@ public class Scanner {
         return isAlpha(c) || isDigit(c);
     }
 
+    private boolean isTernary() {
+        // case '?': // keep churning till we see ':'
+        return true;
+    }
+
 
 }

@@ -20,8 +20,10 @@ class Parser {
     }
 
     private Expr expression() {
-        return equality();
+//        return equality();
+        return ternary();
     }
+
 
     private Expr equality() {
         Expr expr = comparison();
@@ -32,39 +34,24 @@ class Parser {
             expr = new Expr.Binary(expr, operator, right);
         }
 
+//        String me = 1 == 1 ? "yes" : 3 == 4 ? "re" : "who";
+
         return expr;
     }
 
-    private boolean match(TokenType... types) {
-        for (TokenType type : types) {
-            if(check(type)) {
-                advance();
-                return true;
-            }
+    private Expr ternary () {
+        Expr expr = equality();
+
+        while (match(TokenType.TERNARY)) {
+            Token operator = previous();
+            Expr left = equality();
+            Token colon = previous();
+            Expr right = equality();
+
+            expr = new Expr.Ternary(expr, operator, left, colon, right);
         }
 
-        return false;
-    }
-
-    private boolean check(TokenType type) {
-        if (isAtEnd()) return false;
-        return peek().type == type;
-    }
-
-    private Token advance() {
-        if(!isAtEnd()) current++;
-        return previous();
-    }
-
-    private boolean isAtEnd() {
-        return peek().type == TokenType.EOF;
-    }
-
-    private Token peek() {
-        return tokens.get(current);
-    }
-    private Token previous() {
-        return tokens.get(current - 1);
+        return expr;
     }
 
     private Expr comparison() {
@@ -130,6 +117,38 @@ class Parser {
         }
 
         throw error(peek(), "Expect Expression");
+    }
+
+    private boolean match(TokenType... types) {
+        for (TokenType type : types) {
+            if(check(type)) {
+                advance();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean check(TokenType type) {
+        if (isAtEnd()) return false;
+        return peek().type == type;
+    }
+
+    private Token advance() {
+        if(!isAtEnd()) current++;
+        return previous();
+    }
+
+    private boolean isAtEnd() {
+        return peek().type == TokenType.EOF;
+    }
+
+    private Token peek() {
+        return tokens.get(current);
+    }
+    private Token previous() {
+        return tokens.get(current - 1);
     }
 
     private Token consume (TokenType type, String message) {
