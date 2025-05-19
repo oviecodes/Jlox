@@ -35,38 +35,6 @@ class Parser {
         return expr;
     }
 
-    private boolean match(TokenType... types) {
-        for (TokenType type : types) {
-            if(check(type)) {
-                advance();
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean check(TokenType type) {
-        if (isAtEnd()) return false;
-        return peek().type == type;
-    }
-
-    private Token advance() {
-        if(!isAtEnd()) current++;
-        return previous();
-    }
-
-    private boolean isAtEnd() {
-        return peek().type == TokenType.EOF;
-    }
-
-    private Token peek() {
-        return tokens.get(current);
-    }
-    private Token previous() {
-        return tokens.get(current - 1);
-    }
-
     private Expr comparison() {
         Expr expr = term();
 
@@ -113,7 +81,6 @@ class Parser {
         return primary();
     }
 
-
     private Expr primary() {
         if (match(TokenType.FALSE)) return new Expr.Literal(false);
         if (match(TokenType.TRUE)) return new Expr.Literal(true);
@@ -130,6 +97,38 @@ class Parser {
         }
 
         throw error(peek(), "Expect Expression");
+    }
+
+    private boolean match(TokenType... types) {
+        for (TokenType type : types) {
+            if(check(type)) {
+                advance();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean check(TokenType type) {
+        if (isAtEnd()) return false;
+        return peek().type == type;
+    }
+
+    private Token advance() {
+        if(!isAtEnd()) current++;
+        return previous();
+    }
+
+    private boolean isAtEnd() {
+        return peek().type == TokenType.EOF;
+    }
+
+    private Token peek() {
+        return tokens.get(current);
+    }
+    private Token previous() {
+        return tokens.get(current - 1);
     }
 
     private Token consume (TokenType type, String message) {
